@@ -23,15 +23,20 @@ export async function getLatestVariables(): Promise<Variables | null> {
     .from('variables')
     .select('*')
     .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+    .limit(1);
 
   if (error) {
     console.error('Error fetching variables:', error);
     throw new Error(error.message);
   }
 
-  return data;
+  // If no data or empty array, return null
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  // Return the first (latest) record
+  return data[0];
 }
 
 // Create a new variables record
