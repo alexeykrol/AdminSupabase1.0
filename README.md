@@ -1,37 +1,32 @@
-# 🔧 Airtable Admin Panel
+# 🔧 Supabase Admin Panel
 
-Современная веб-панель администратора для управления переменными в Airtable с красивым интерфейсом и безопасным API.
+Современная веб-панель администратора для управления переменными в Supabase с красивым интерфейсом и безопасным API.
 
-![Admin Panel](https://img.shields.io/badge/React-18.3.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-3.4.1-blue) ![Netlify](https://img.shields.io/badge/Deploy-Netlify-green)
+![Admin Panel](https://img.shields.io/badge/React-18.3.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-3.4.1-blue) ![Supabase](https://img.shields.io/badge/Database-Supabase-green)
 
 ## ✨ Возможности
 
-- 📊 **Просмотр текущих значений** переменных из Airtable
+- 📊 **Просмотр текущих значений** переменных из Supabase
 - ✏️ **Обновление переменных** через удобную форму
 - 🔄 **Автоматическое обновление** данных
 - 🎨 **Современный UI** с Tailwind CSS
-- 🔒 **Безопасное API** через Netlify Functions
+- 🔒 **Безопасное API** через Supabase RLS
 - 📱 **Адаптивный дизайн** для всех устройств
 - ⚡ **Быстрая загрузка** и отзывчивый интерфейс
-
-## 🚀 Демо
-
-**Живая версия:** [https://11-adminpanel-001.netlify.app/](https://11-adminpanel-001.netlify.app/)
 
 ## 🛠 Технологии
 
 - **Frontend:** React 18 + TypeScript + Vite
 - **Стили:** Tailwind CSS
 - **Иконки:** Lucide React
-- **Backend:** Netlify Functions (Serverless)
-- **База данных:** Airtable API
-- **Деплой:** Netlify
+- **База данных:** Supabase (PostgreSQL)
+- **Аутентификация:** Supabase Auth
+- **Деплой:** Bolt Hosting
 
 ## 📋 Требования
 
 - Node.js 18+
-- Аккаунт Airtable
-- Аккаунт Netlify (для деплоя)
+- Аккаунт Supabase
 
 ## ⚙️ Настройка проекта
 
@@ -39,36 +34,39 @@
 
 ```bash
 git clone <your-repo-url>
-cd airtable-admin-panel
+cd supabase-admin-panel
 npm install
 ```
 
-### 2. Настройка Airtable
+### 2. Настройка Supabase
 
-#### Создание базы данных:
-1. Зайдите в [Airtable](https://airtable.com)
-2. Создайте новую базу или используйте существующую
-3. Создайте таблицу со следующими полями:
-   - `variable_1` (Single line text)
-   - `variable_2` (Single line text)
-   - `Created` (Created time) - для сортировки
+#### Создание проекта:
+1. Зайдите в [Supabase Dashboard](https://supabase.com/dashboard)
+2. Создайте новый проект
+3. Дождитесь завершения настройки
 
 #### Получение API ключей:
+- **VITE_SUPABASE_URL:** URL вашего проекта (Settings → API → Project URL)
+- **VITE_SUPABASE_ANON_KEY:** Anon/Public ключ (Settings → API → Project API keys)
 
-**AIRTABLE_BASE_ID:**
-- Откройте вашу базу в Airtable
-- URL выглядит как `https://airtable.com/appXXXXXXXXXXXXXX/...`
-- `appXXXXXXXXXXXXXX` - это ваш BASE_ID
+### 3. Настройка переменных окружения
 
-**AIRTABLE_TABLE_ID:**
-- Название вашей таблицы (например: "Variables")
+Создайте файл `.env` в корне проекта:
 
-**AIRTABLE_API_KEY:**
-- Airtable → Account → Developer hub → Personal access tokens
-- Создайте новый токен с правами на вашу базу
-- Токен должен начинаться с `pat`
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
 
-### 3. Локальная разработка
+### 4. Настройка базы данных
+
+Таблица `variables` уже создана в проекте со следующими полями:
+- `id` (uuid, primary key)
+- `variable_1` (text)
+- `variable_2` (text)
+- `created_at` (timestamp)
+
+### 5. Локальная разработка
 
 ```bash
 # Запуск dev сервера
@@ -77,30 +75,13 @@ npm run dev
 
 Приложение откроется на `http://localhost:5173`
 
-> **Примечание:** В режиме разработки используются моковые данные, так как Netlify Functions недоступны локально.
+## 🚀 Деплой
 
-## 🚀 Деплой на Netlify
+### Автоматический деплой через Bolt:
 
-### Автоматический деплой:
-
-1. **Подключите репозиторий:**
-   - Зайдите в [Netlify Dashboard](https://app.netlify.com)
-   - New site from Git → выберите ваш репозиторий
-
-2. **Настройки сборки:**
-   ```
-   Build command: npm run build
-   Publish directory: dist
-   ```
-
-3. **Переменные окружения:**
-   - Site settings → Environment variables
-   - Добавьте переменные:
-   ```
-   AIRTABLE_BASE_ID = appXXXXXXXXXXXXXX
-   AIRTABLE_TABLE_ID = Variables
-   AIRTABLE_API_KEY = patXXXXXXXXXXXXXX
-   ```
+1. Нажмите кнопку "Deploy" в интерфейсе Bolt
+2. Добавьте переменные окружения в настройках деплоя
+3. Приложение будет автоматически развернуто
 
 ### Ручной деплой:
 
@@ -108,9 +89,8 @@ npm run dev
 # Сборка проекта
 npm run build
 
-# Деплой через Netlify CLI
-npm install -g netlify-cli
-netlify deploy --prod --dir=dist
+# Деплой на любой статический хостинг
+# (Vercel, Netlify, GitHub Pages и т.д.)
 ```
 
 ## 📁 Структура проекта
@@ -120,73 +100,53 @@ netlify deploy --prod --dir=dist
 │   ├── App.tsx              # Главный компонент
 │   ├── main.tsx            # Точка входа
 │   ├── index.css           # Стили Tailwind
+│   ├── lib/
+│   │   └── supabase.ts     # Supabase клиент и функции
 │   └── vite-env.d.ts       # TypeScript типы
-├── netlify/
-│   └── functions/
-│       └── airtable-api.js # Serverless функция
-├── netlify.toml            # Конфигурация Netlify
 ├── package.json            # Зависимости
 ├── tailwind.config.js      # Конфигурация Tailwind
 ├── tsconfig.json          # Конфигурация TypeScript
 └── vite.config.ts         # Конфигурация Vite
 ```
 
-## 🔧 API Endpoints
+## 🔧 API Функции
 
-### GET `/api/airtable-api`
-Получение текущих значений переменных
+### `getLatestVariables()`
+Получение последней записи переменных
 
-**Ответ:**
-```json
-{
-  "records": [
-    {
-      "fields": {
-        "variable_1": "значение 1",
-        "variable_2": "значение 2"
-      }
-    }
-  ]
-}
-```
-
-### POST `/api/airtable-api`
+### `createVariables(variables)`
 Создание новой записи с переменными
 
-**Тело запроса:**
-```json
-{
-  "variable_1": "новое значение 1",
-  "variable_2": "новое значение 2"
-}
-```
+### `getAllVariables()`
+Получение всех записей (для истории)
 
 ## 🐛 Отладка
 
-### Проверка логов Netlify Functions:
-1. Netlify Dashboard → ваш сайт
-2. Functions → airtable-api → View logs
+### Проверка подключения к Supabase:
+1. Убедитесь что переменные окружения установлены правильно
+2. Проверьте URL и API ключ в Supabase Dashboard
+3. Убедитесь что RLS политики настроены корректно
 
 ### Частые проблемы:
 
-**500 Error:**
+**Ошибки подключения:**
 - Проверьте переменные окружения
-- Убедитесь что API ключ имеет права на базу
-- Проверьте правильность BASE_ID и TABLE_ID
+- Убедитесь что проект Supabase активен
+- Проверьте правильность URL и API ключа
 
-**CORS ошибки:**
-- Функция уже настроена для работы с CORS
-- Проверьте что запросы идут на правильный домен
+**Ошибки доступа:**
+- Проверьте RLS политики в Supabase
+- Убедитесь что пользователь аутентифицирован (если требуется)
 
 **Пустые данные:**
-- Убедитесь что в таблице есть записи
-- Проверьте названия полей в Airtable
+- Убедитесь что в таблице `variables` есть записи
+- Проверьте правильность названий полей
 
 ## 🔒 Безопасность
 
+- ✅ Row Level Security (RLS) включен для всех таблиц
 - ✅ API ключи хранятся в переменных окружения
 - ✅ Никаких секретов в исходном коде
-- ✅ CORS настроен правильно
 - ✅ Валидация входных данных
 - ✅ Обработка ошибок
 
@@ -197,10 +157,11 @@ MIT License - используйте свободно для любых целе
 ## 🤝 Поддержка
 
 Если возникли вопросы или проблемы:
-1. Проверьте логи Netlify Functions
+1. Проверьте логи в браузере (Developer Tools)
 2. Убедитесь в правильности переменных окружения
-3. Создайте Issue в репозитории
+3. Проверьте настройки Supabase проекта
+4. Создайте Issue в репозитории
 
 ---
 
-**Создано с ❤️ используя React, TypeScript и Netlify**
+**Создано с ❤️ используя React, TypeScript и Supabase**

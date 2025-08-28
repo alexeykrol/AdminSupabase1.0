@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Database, AlertCircle } from 'lucide-react';
-
-interface Variables {
-  variable_1: string;
-  variable_2: string;
-}
+import { getLatestVariables, createVariables, Variables } from './lib/supabase';
 
 function App() {
   const [currentValues, setCurrentValues] = useState<Variables>({
@@ -20,55 +16,17 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // Fetch current values from Airtable
+  // Fetch current values from Supabase
   const fetchVariables = async () => {
     try {
       setError(null);
+      const data = await getLatestVariables();
       
-      // For local development, use a mock response since Netlify functions aren't available
-      if (import.meta.env.DEV) {
-        // Mock data for development
-        const mockData = {
-          records: [
-            {
-              fields: {
-                variable_1: 'Development Value 1',
-                variable_2: 'Development Value 2'
-              }
-            }
-          ]
-        };
-        
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        if (mockData.records && mockData.records.length > 0) {
-          const latestRecord = mockData.records[0];
-          const variables: Variables = {
-            variable_1: latestRecord.fields.variable_1 || '',
-            variable_2: latestRecord.fields.variable_2 || ''
-          };
-          setCurrentValues(variables);
-        }
-        return;
-      }
-      
-      const response = await fetch('/.netlify/functions/airtable-api');
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      // Get the most recent record (first in the list)
-      if (data.records && data.records.length > 0) {
-        const latestRecord = data.records[0];
-        const variables: Variables = {
-          variable_1: latestRecord.fields.variable_1 || '',
-          variable_2: latestRecord.fields.variable_2 || ''
-        };
-        setCurrentValues(variables);
+      if (data) {
+        setCurrentValues({
+          variable_1: data.variable_1 || '',
+          variable_2: data.variable_2 || ''
+        });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch variables');
@@ -78,7 +36,7 @@ function App() {
     }
   };
 
-  // Create new variable record in Airtable
+  // Create new variable record in Supabase
   const createVariableRecord = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -87,47 +45,22 @@ function App() {
     setSuccess(false);
 
     try {
-      // For local development, simulate successful update
-      if (import.meta.env.DEV) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Update current values and clear form
-        setCurrentValues(formValues);
-        setFormValues({ variable_1: '', variable_2: '' });
-        setSuccess(true);
-        
-        // Clear success message after 3 seconds
-        setTimeout(() => setSuccess(false), 3000);
-        return;
-      }
-      
-      const response = await fetch('/.netlify/functions/airtable-api', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          variable_1: formValues.variable_1,
-          variable_2: formValues.variable_2
-        })
+      const newRecord = await createVariables({
+        variable_1: formValues.variable_1,
+        variable_2: formValues.variable_2
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       // Update current values and clear form
-      setCurrentValues(formValues);
+      setCurrentValues({
+        variable_1: newRecord.variable_1,
+        variable_2: newRecord.variable_2
+      });
       setFormValues({ variable_1: '', variable_2: '' });
       setSuccess(true);
       
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      // Fetch latest values to show the most recent record
-      await fetchVariables();
-      
       setError(err instanceof Error ? err.message : 'Failed to create record');
       console.error('Error creating record:', err);
     } finally {
@@ -168,7 +101,7 @@ function App() {
             <Database className="h-8 w-8 text-blue-600 mr-2" />
             <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
           </div>
-          <p className="text-gray-600">Manage Airtable Variables</p>
+          <p className="text-gray-600">Manage Supabase Variables</p>
         </div>
 
         {/* Current Values Display */}
