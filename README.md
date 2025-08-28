@@ -9,7 +9,7 @@ main
 
 Функционал веток - абсолютно идентичный и показывающий интеграцию простой админпанели, созданной в Bolt (React) и интегрированной с базой данных.
 
-В файле [https://github.com/alexeykrol/AdminSupabase1.0/blob/3.0sb/difference.md](difference.md)
+В файле [difference.md](https://github.com/alexeykrol/AdminSupabase1.0/blob/3.0sb/difference.md)
 
 # 🔧 Airtable Admin Panel
 
