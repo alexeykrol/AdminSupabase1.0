@@ -9,19 +9,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Sign in anonymously to satisfy RLS policies
-export async function ensureAuthenticated() {
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    const { error } = await supabase.auth.signInAnonymously();
-    if (error) {
-      console.error('Authentication error:', error);
-      throw new Error('Failed to authenticate');
-    }
-  }
-}
-
 export interface Variables {
   id?: string;
   variable_1: string;
@@ -32,8 +19,6 @@ export interface Variables {
 
 // Get the latest variables record
 export async function getLatestVariables(): Promise<Variables | null> {
-  await ensureAuthenticated();
-  
   const { data, error } = await supabase
     .from('variables')
     .select('*')
@@ -56,8 +41,6 @@ export async function getLatestVariables(): Promise<Variables | null> {
 
 // Create a new variables record
 export async function createVariables(variables: Omit<Variables, 'id' | 'created_at' | 'updated_at'>): Promise<Variables> {
-  await ensureAuthenticated();
-  
   const { data, error } = await supabase
     .from('variables')
     .insert([variables])
@@ -74,8 +57,6 @@ export async function createVariables(variables: Omit<Variables, 'id' | 'created
 
 // Get all variables (for history if needed)
 export async function getAllVariables(): Promise<Variables[]> {
-  await ensureAuthenticated();
-  
   const { data, error } = await supabase
     .from('variables')
     .select('*')
