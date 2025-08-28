@@ -16,7 +16,7 @@
 
 ## 🚀 Демо
 
-**Живая версия:** [https://leafy-conkies-77da5d.netlify.app/](https://leafy-conkies-77da5d.netlify.app/)
+**Живая версия:** [https://11-adminpanel-001.netlify.app/](https://11-adminpanel-001.netlify.app/)
 
 ## 🛠 Технологии
 
